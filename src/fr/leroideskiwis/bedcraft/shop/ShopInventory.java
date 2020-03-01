@@ -1,6 +1,7 @@
 package fr.leroideskiwis.bedcraft.shop;
 
 import fr.leroideskiwis.bedcraft.player.CustomPlayer;
+import fr.leroideskiwis.bedcraft.player.PlayerState;
 import fr.leroideskiwis.bedcraft.sql.SQLManager;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -38,7 +39,7 @@ public class ShopInventory {
             customPlayer.removeGold(shopItem.price);
             customPlayer.player.sendMessage("§aVous avez acheté " + shopItem.itemStack.getType().toString().toLowerCase() + " pour " + shopItem.price + " coins");
             customPlayer.sendMessage("§aVous avez désormais " + getItem(shopItem.itemStack).get().getAmount() + " " + shopItem.itemStack.getType().toString().toLowerCase());
-            setInventoryPlayer();
+            if(customPlayer.isState(PlayerState.CREATION)) setInventoryPlayer();
         } else customPlayer.player.sendMessage("§cIl vous manque " + (shopItem.price - customPlayer.getGold()) + " pour acheter ceci !");
     }
 
