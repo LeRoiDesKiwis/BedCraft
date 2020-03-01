@@ -1,0 +1,10 @@
+name: bedcraft
+author: LeRoiDesKiwis
+version: 1.0
+main: fr.leroideskiwis.bedcraft.core.BedCraft
+commands:
+  creation:
+  duel:
+  shop:
+  registerblock:
+  stats:

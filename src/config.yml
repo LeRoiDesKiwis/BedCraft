@@ -1,0 +1,12 @@
+database:
+  name: "database"
+  user: "root"
+  password: "root"
+  port: 1433
+  host: "localhost"
+locations:
+  hub:
+    world: "build"
+    x: 749
+    y: 13
+    z: -468
