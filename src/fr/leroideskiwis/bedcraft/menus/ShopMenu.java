@@ -36,7 +36,7 @@ public class ShopMenu implements Menu {
             inventory.setItem(i, new ItemBuilder(itemStack)
                     .name("§7"+itemStack.getType().toString().toLowerCase())
                     .addLore("§ePrix : "+shopItem.price)
-                    .addLore("§eVous possédez "+(itemPlayer.isPresent() ? "§a"+itemPlayer.get().getAmount() : "§c0")+" items")
+                    .addLore("§eVous possédez "+(itemPlayer.map(item -> "§a" + item.getAmount()).orElse("§c0"))+" item(s)")
                     .build());
         }
 

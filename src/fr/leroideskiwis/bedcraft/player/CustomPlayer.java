@@ -109,6 +109,7 @@ public class CustomPlayer {
         preparedStatement.execute();
         preparedStatement.close();
         shopInventory.save();
+        base.save();
     }
 
     public boolean hasEnough(int gold){
@@ -138,5 +139,15 @@ public class CustomPlayer {
 
     public boolean isIn(Block block) throws SQLException {
         return base.isIn(block.getLocation());
+    }
+
+    public void placeBlock(Location location) throws SQLException {
+        base.addBlock(location);
+    }
+
+    public void destroyBlock(Block block) throws SQLException {
+        block.setType(Material.AIR);
+        base.removeBlock(block.getLocation());
+        shopInventory.setInventoryPlayer();
     }
 }

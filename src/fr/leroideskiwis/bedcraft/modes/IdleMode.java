@@ -12,5 +12,6 @@ public class IdleMode implements PlayerMode {
         player.getInventory().clear();
         player.setAllowFlight(false);
         customPlayer.teleportToSpawn();
+        customPlayer.player.getInventory().clear();
     }
 }

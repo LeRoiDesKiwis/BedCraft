@@ -22,7 +22,7 @@ public class CreationBoucle implements Runnable {
                 try {
 //                    Bukkit.broadcastMessage(customPlayer.player.getDisplayName()+" : "+customPlayer.base.isIn());
 
-                    if(!customPlayer.base.isIn()) {
+                    if(!customPlayer.base.isIn() || customPlayer.player.getLocation().getY() < -10) {
                         customPlayer.base.teleport();
                         customPlayer.player.sendMessage("§cErreur : vous dépassez les limites de votre base !");
                     }

@@ -57,4 +57,13 @@ public class ShopItem implements Cloneable{
     public void setAmount(int amount) {
         itemStack.setAmount(amount);
     }
+
+    @Override
+    public String toString() {
+        return "ShopItem{" +
+                "price=" + price +
+                ", itemStack=" + itemStack +
+                ", id=" + id +
+                '}';
+    }
 }

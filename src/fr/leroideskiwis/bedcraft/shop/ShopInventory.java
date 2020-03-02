@@ -3,6 +3,7 @@ package fr.leroideskiwis.bedcraft.shop;
 import fr.leroideskiwis.bedcraft.player.CustomPlayer;
 import fr.leroideskiwis.bedcraft.player.PlayerState;
 import fr.leroideskiwis.bedcraft.sql.SQLManager;
+import fr.leroideskiwis.bedcraft.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -77,6 +78,7 @@ public class ShopInventory {
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
             ShopItem shopItem = shop.getInDatabase(resultSet);
+            if(shopItem == null) continue;
             shopItem.setAmount(resultSet.getInt("amount"));
             items.add(shopItem);
         }
@@ -91,7 +93,10 @@ public class ShopInventory {
     public void setInventoryPlayer(){
         customPlayer.player.getInventory().clear();
         for (int i = 0; i < customPlayer.shopInventory.getShopItems().size() && i < 35; i++) {
-            customPlayer.player.getInventory().setItem(i, customPlayer.shopInventory.getShopItems().get(i).itemStack);
+            ItemStack toAdd = customPlayer.shopInventory.getShopItems().get(i).itemStack.clone();
+            int count = customPlayer.base.countBlocks(toAdd);
+            toAdd.setAmount(toAdd.getAmount()-count);
+            i+= Utils.setInventory(customPlayer.player.getInventory(), i, toAdd);
         }
     }
 

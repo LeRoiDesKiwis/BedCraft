@@ -24,9 +24,14 @@ public class Shop {
     public void load() throws SQLException {
         ResultSet resultSet = sqlManager.executeQuery("SELECT * FROM shopItems");
         System.out.println("Loading shop...");
+        shopItems.clear();
         while(resultSet.next()){
-            System.out.println(extractResult(resultSet).itemStack.toString());
-            shopItems.add(extractResult(resultSet));
+            ShopItem shopItem = extractResult(resultSet);
+            System.out.println(shopItem.toString());
+            if(shopItem.price > 0){
+                shopItems.add(shopItem);
+                System.out.println("Added in the list !");
+            }
         }
     }
 
@@ -36,7 +41,7 @@ public class Shop {
                 " ON DUPLICATE KEY UPDATE" +
                 " material=VALUES(material), " +
                 "data=VALUES(data), " +
-                "price=VALUES(price)"+
+                "price=VALUES(price), "+
                 "amount=VALUES(amount)");
         PreparedStatement preparedStatement1 = sqlManager.prepareStatement("SELECT * FROM shopItems WHERE id=?");
         for (ShopItem shopItem : shopItems) {
