@@ -1,8 +1,10 @@
-package fr.leroideskiwis.bedcraft.commands;
+package fr.leroideskiwis.bedcraft.shop;
 
 import fr.leroideskiwis.bedcraft.managers.CustomPlayerManager;
+import fr.leroideskiwis.bedcraft.menus.MenuManager;
 import fr.leroideskiwis.bedcraft.player.CustomPlayer;
 import fr.leroideskiwis.bedcraft.player.PlayerState;
+import fr.leroideskiwis.bedcraft.shop.Shop;
 import fr.leroideskiwis.bedcraft.utils.CommandUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,11 +13,15 @@ import org.bukkit.entity.Player;
 
 import java.util.Optional;
 
-public class DuelCommand implements CommandExecutor {
+public class ShopCommand implements CommandExecutor {
     private final CustomPlayerManager customPlayerManager;
+    private final Shop shop;
+    private final MenuManager menuManager;
 
-    public DuelCommand(CustomPlayerManager customPlayerManager) {
+    public ShopCommand(CustomPlayerManager customPlayerManager, Shop shop, MenuManager menuManager) {
         this.customPlayerManager = customPlayerManager;
+        this.shop = shop;
+        this.menuManager = menuManager;
     }
 
     @Override
@@ -24,10 +30,8 @@ public class DuelCommand implements CommandExecutor {
         if(CommandUtils.isPlayer(commandSender)){
             Player player = (Player)commandSender;
             Optional<CustomPlayer> customPlayerOpt = customPlayerManager.getCustomPlayer(player);
-            customPlayerOpt.ifPresent(customPlayer -> customPlayer.toggle(PlayerState.IDLE, PlayerState.DUEL));
-
+            customPlayerOpt.ifPresent(customPlayer -> menuManager.getMenu("shop").ifPresent(menu -> menu.open(customPlayer, shop)));
         }
-
         return false;
     }
 }

@@ -68,7 +68,6 @@ public class CustomPlayer {
         shopInventory.load();
         preparedStatement.close();
         base.init();
-        teleportToSpawn();
 
     }
 
@@ -93,7 +92,7 @@ public class CustomPlayer {
     }
 
     public int getLevel(){
-        return (int)Math.log(exp);
+        return exp == 0 ? 0 : (int)Math.log(exp);
     }
 
     public UUID getUUID(){
@@ -149,5 +148,13 @@ public class CustomPlayer {
         block.setType(Material.AIR);
         base.removeBlock(block.getLocation());
         shopInventory.setInventoryPlayer();
+    }
+
+    public void addGold(int gold) {
+        this.gold+=gold;
+    }
+
+    public String getName() {
+        return player.getDisplayName();
     }
 }

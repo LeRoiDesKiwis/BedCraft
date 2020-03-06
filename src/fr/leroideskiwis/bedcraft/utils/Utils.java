@@ -28,4 +28,8 @@ public class Utils {
         return 0;
     }
 
+    public static boolean isInt(String text){
+        return text.matches("^-?\\d+$");
+    }
+
 }

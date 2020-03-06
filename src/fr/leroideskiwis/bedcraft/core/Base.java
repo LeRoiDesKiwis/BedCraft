@@ -16,6 +16,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class Base {
 
@@ -184,6 +187,13 @@ public class Base {
 
     public void removeBlock(Location location) throws SQLException {
         blocks.remove(getOffset(location));
+    }
+
+    public boolean checkRequirements(Predicate<Map<Location, MaterialData>>... requirements){
+        for(Predicate<Map<Location, MaterialData>> requirement : requirements){
+            if(!requirement.test(blocks)) return false;
+        }
+        return true;
     }
 
     public int countBlocks(ItemStack itemStack) {

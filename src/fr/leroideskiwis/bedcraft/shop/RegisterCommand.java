@@ -1,4 +1,4 @@
-package fr.leroideskiwis.bedcraft.commands;
+package fr.leroideskiwis.bedcraft.shop;
 
 import fr.leroideskiwis.bedcraft.shop.Shop;
 import fr.leroideskiwis.bedcraft.shop.ShopItem;

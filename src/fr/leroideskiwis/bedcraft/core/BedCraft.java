@@ -3,6 +3,12 @@ package fr.leroideskiwis.bedcraft.core;
 import fr.leroideskiwis.bedcraft.boucles.CreationBoucle;
 import fr.leroideskiwis.bedcraft.builders.ConnectionDataBuilder;
 import fr.leroideskiwis.bedcraft.commands.*;
+import fr.leroideskiwis.bedcraft.commands.duel.AcceptCommand;
+import fr.leroideskiwis.bedcraft.commands.duel.DenyCommand;
+import fr.leroideskiwis.bedcraft.commands.duel.DuelCommand;
+import fr.leroideskiwis.bedcraft.duel.Duels;
+import fr.leroideskiwis.bedcraft.shop.RegisterCommand;
+import fr.leroideskiwis.bedcraft.shop.ShopCommand;
 import fr.leroideskiwis.bedcraft.listeners.CreationEvents;
 import fr.leroideskiwis.bedcraft.listeners.JoinLeaveEvents;
 import fr.leroideskiwis.bedcraft.listeners.MenuEvents;
@@ -24,6 +30,7 @@ public class BedCraft extends JavaPlugin {
     private CustomPlayerManager customPlayerManager;
     private Shop shop;
     private MenuManager menuManager;
+    private Duels duels = new Duels();
 
     @Override
     public void onEnable() {
@@ -39,10 +46,13 @@ public class BedCraft extends JavaPlugin {
         pluginManager.registerEvents(new UtilsEvents(), this);
         pluginManager.registerEvents(new MenuEvents(customPlayerManager, menuManager, shop), this);
         getCommand("creation").setExecutor(new CreationCommand(customPlayerManager, shop));
-        getCommand("duel").setExecutor(new DuelCommand(customPlayerManager));
+        getCommand("duel").setExecutor(new DuelCommand(customPlayerManager, duels));
         getCommand("shop").setExecutor(new ShopCommand(customPlayerManager, shop, menuManager));
         getCommand("registerblock").setExecutor(new RegisterCommand(shop));
         getCommand("stats").setExecutor(new StatsCommand(customPlayerManager));
+        getCommand("givemoney").setExecutor(new GiveMoneyCommand(customPlayerManager));
+        getCommand("daccept").setExecutor(new AcceptCommand(duels));
+        getCommand("ddeny").setExecutor(new DenyCommand(duels));
 
         try {
             Bukkit.broadcastMessage("Connexion à la base de donnée...");

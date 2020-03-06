@@ -3,8 +3,11 @@ package fr.leroideskiwis.bedcraft.managers;
 import fr.leroideskiwis.bedcraft.core.BedCraft;
 import fr.leroideskiwis.bedcraft.player.CustomPlayer;
 import fr.leroideskiwis.bedcraft.shop.Shop;
+import fr.leroideskiwis.bedcraft.shop.ShopInventory;
 import fr.leroideskiwis.bedcraft.sql.SQLManager;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,6 +32,8 @@ public class CustomPlayerManager {
     public CustomPlayer registerAndLoad(Player player, Shop shop) throws SQLException {
         CustomPlayer customPlayer = new CustomPlayer(player, shop, sqlManager, bedcraft);
         customPlayers.add(customPlayer);
+        ShopInventory shopInventory = customPlayer.shopInventory;
+        shopInventory.getItem(new ItemStack(Material.BED, 1)).ifPresent(shopItem -> shopInventory.getShopItems().add(shopItem));
         customPlayer.load();
         return customPlayer;
     }

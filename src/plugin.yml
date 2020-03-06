@@ -8,3 +8,6 @@ commands:
   shop:
   registerblock:
   stats:
+  givemoney:
+  daccept:
+  ddeny:
