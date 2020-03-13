@@ -4,6 +4,8 @@ import fr.leroideskiwis.bedcraft.player.CustomPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
+
 public class IdleMode implements PlayerMode {
     @Override
     public void init(CustomPlayer customPlayer) {
@@ -13,5 +15,10 @@ public class IdleMode implements PlayerMode {
         player.setAllowFlight(false);
         customPlayer.teleportToSpawn();
         customPlayer.player.getInventory().clear();
+        try {
+            customPlayer.base.save();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

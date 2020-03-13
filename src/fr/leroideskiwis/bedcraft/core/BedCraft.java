@@ -9,7 +9,7 @@ import fr.leroideskiwis.bedcraft.commands.duel.DuelCommand;
 import fr.leroideskiwis.bedcraft.duel.Duels;
 import fr.leroideskiwis.bedcraft.shop.RegisterCommand;
 import fr.leroideskiwis.bedcraft.shop.ShopCommand;
-import fr.leroideskiwis.bedcraft.listeners.CreationEvents;
+import fr.leroideskiwis.bedcraft.listeners.BlockEvents;
 import fr.leroideskiwis.bedcraft.listeners.JoinLeaveEvents;
 import fr.leroideskiwis.bedcraft.listeners.MenuEvents;
 import fr.leroideskiwis.bedcraft.listeners.UtilsEvents;
@@ -26,23 +26,24 @@ import java.sql.SQLException;
 
 public class BedCraft extends JavaPlugin {
 
-    private final SQLManager sqlManager = new SQLManager();
+    private SQLManager sqlManager;
     private CustomPlayerManager customPlayerManager;
     private Shop shop;
     private MenuManager menuManager;
-    private Duels duels = new Duels();
+    private Duels duels;
 
     @Override
     public void onEnable() {
+        this.sqlManager = new SQLManager();
         saveDefaultConfig();
-
         PluginManager pluginManager = getServer().getPluginManager();
-        this.customPlayerManager = new CustomPlayerManager(this, sqlManager);
+        this.customPlayerManager = new CustomPlayerManager(duels, this, sqlManager);
         Bukkit.getScheduler().runTaskTimer(this, new CreationBoucle(customPlayerManager), 20, 20);
         this.shop = new Shop(sqlManager);
         this.menuManager = new MenuManager();
+        this.duels = new Duels(customPlayerManager);
         pluginManager.registerEvents(new JoinLeaveEvents(customPlayerManager, sqlManager, shop), this);
-        pluginManager.registerEvents(new CreationEvents(customPlayerManager), this);
+        pluginManager.registerEvents(new BlockEvents(customPlayerManager, shop, duels), this);
         pluginManager.registerEvents(new UtilsEvents(), this);
         pluginManager.registerEvents(new MenuEvents(customPlayerManager, menuManager, shop), this);
         getCommand("creation").setExecutor(new CreationCommand(customPlayerManager, shop));
@@ -87,6 +88,7 @@ public class BedCraft extends JavaPlugin {
             customPlayerManager.saveAll();
             shop.save();
             sqlManager.close();
+            duels.clearAll();
         } catch (SQLException e) {
             e.printStackTrace();
             System.err.println("Une erreur s'est produite. La sauvegarde n'a pas pu être effectuée.");

@@ -2,19 +2,17 @@ package fr.leroideskiwis.bedcraft.player;
 
 import fr.leroideskiwis.bedcraft.core.Base;
 import fr.leroideskiwis.bedcraft.core.BedCraft;
+import fr.leroideskiwis.bedcraft.duel.Duels;
 import fr.leroideskiwis.bedcraft.shop.Shop;
 import fr.leroideskiwis.bedcraft.shop.ShopInventory;
 import fr.leroideskiwis.bedcraft.sql.SQLManager;
 import fr.leroideskiwis.bedcraft.utils.Interval;
-import fr.leroideskiwis.bedcraft.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,6 +29,7 @@ public class CustomPlayer {
     private PlayerState playerState = PlayerState.IDLE;
     public final ShopInventory shopInventory;
     private BedCraft bedCraft;
+    private Duels duels;
 
     private int id;
 
@@ -38,12 +37,17 @@ public class CustomPlayer {
         return gold;
     }
 
-    public CustomPlayer(Player player, Shop shop, SQLManager sqlManager, BedCraft bedCraft) {
+    public CustomPlayer(Duels duels, Player player, Shop shop, SQLManager sqlManager, BedCraft bedCraft) {
         this.player = player;
         this.shopInventory = new ShopInventory(this, shop, sqlManager);
         this.base = new Base(this, sqlManager);
         this.sqlManager = sqlManager;
         this.bedCraft = bedCraft;
+        this.duels = duels;
+    }
+
+    public PlayerState getState(){
+        return playerState;
     }
 
     public boolean isIn(int borderX, int borderX2, int borderZ, int borderZ2){

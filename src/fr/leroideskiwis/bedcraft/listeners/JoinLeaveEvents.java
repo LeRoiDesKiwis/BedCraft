@@ -2,6 +2,7 @@ package fr.leroideskiwis.bedcraft.listeners;
 
 import fr.leroideskiwis.bedcraft.core.Prefixes;
 import fr.leroideskiwis.bedcraft.managers.CustomPlayerManager;
+import fr.leroideskiwis.bedcraft.player.CustomPlayer;
 import fr.leroideskiwis.bedcraft.shop.Shop;
 import fr.leroideskiwis.bedcraft.sql.SQLManager;
 import org.bukkit.Bukkit;
@@ -40,8 +41,12 @@ public class JoinLeaveEvents implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) throws SQLException {
         Player player = event.getPlayer();
+        customPlayerManager.registerAndLoad(player, shop);
+        CustomPlayer customPlayer = customPlayerManager.getCustomPlayer(player).get();
 
         if(!sqlManager.exists(player.getUniqueId())) {
+
+            customPlayer.addGold(1000);
 
             Firework firework = (Firework)player.getWorld().spawnEntity(player.getLocation(), EntityType.FIREWORK);
             FireworkMeta fireworkMeta = firework.getFireworkMeta();
@@ -55,7 +60,5 @@ public class JoinLeaveEvents implements Listener {
             firework.setFireworkMeta(fireworkMeta);
             Bukkit.broadcastMessage(Prefixes.BEDCRAFT+" §aBienvenue sur le serveur §6"+player.getDisplayName()+" §a!!");
         }
-
-        customPlayerManager.registerAndLoad(player, shop);
     }
 }

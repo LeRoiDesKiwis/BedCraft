@@ -37,7 +37,11 @@ public class ShopItem implements Cloneable{
     }
 
     public void add(ShopItem shopItem){
-        itemStack.setAmount(itemStack.getAmount()+shopItem.getAmount());
+        add(shopItem.getAmount());
+    }
+
+    public void add(int amount){
+        itemStack.setAmount(itemStack.getAmount()+amount);
     }
 
     @Override
@@ -47,7 +51,7 @@ public class ShopItem implements Cloneable{
 
     @Override
     protected ShopItem clone() {
-        return new ShopItem(itemStack, price, id, getAmount());
+        return new ShopItem(itemStack.clone(), price, id, getAmount());
     }
 
     public int getAmount() {

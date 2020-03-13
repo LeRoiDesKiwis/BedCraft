@@ -28,10 +28,8 @@ public class Shop {
         while(resultSet.next()){
             ShopItem shopItem = extractResult(resultSet);
             System.out.println(shopItem.toString());
-            if(shopItem.price > 0){
-                shopItems.add(shopItem);
-                System.out.println("Added in the list !");
-            }
+            shopItems.add(shopItem);
+            System.out.println("Added in the list !");
         }
     }
 
@@ -67,7 +65,7 @@ public class Shop {
 
     public Optional<ShopItem> getItem(ItemStack itemStack){
         if(itemStack == null) return Optional.empty();
-        return shopItems.stream().filter(shopItem -> shopItem.itemStack.getType() == itemStack.getType()).findAny();
+        return shopItems.stream().filter(shopItem -> shopItem.itemStack.getType() == itemStack.getType() && shopItem.itemStack.getData().getData() == itemStack.getData().getData()).findAny();
     }
 
     public boolean has(ItemStack itemStack){

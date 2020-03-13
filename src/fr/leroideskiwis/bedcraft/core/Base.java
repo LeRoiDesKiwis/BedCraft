@@ -4,6 +4,7 @@ import fr.leroideskiwis.bedcraft.player.CustomPlayer;
 import fr.leroideskiwis.bedcraft.sql.SQLManager;
 import fr.leroideskiwis.bedcraft.utils.Corners;
 import fr.leroideskiwis.bedcraft.utils.Interval;
+import fr.leroideskiwis.bedcraft.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -32,8 +33,11 @@ public class Base {
     }
 
     public void teleport() throws SQLException {
-        if (getLocation().add(0, -1, 0).getBlock().getType() == Material.AIR)
-            getLocation().add(0, -1, 0).getBlock().setType(Material.STONE);
+        Location location = getLocation().add(0, -1, 0);
+        if (location.getBlock().getType() == Material.AIR) {
+            location.getBlock().setType(Material.STONE);
+            addBlock(location);
+        }
         customPlayer.player.teleport(getLocation());
     }
 
@@ -76,15 +80,18 @@ public class Base {
         return (String) getObject(label);
     }
 
-    public void copyTo(Location location) {
+    public List<Location> copyTo(Location location) {
+        List<Location> list = new ArrayList<>();
 
         for (Map.Entry<Location, MaterialData> entries : blocks.entrySet()) {
             Location loc = entries.getKey();
-            Location location1 = new Location(location.getWorld(), location.getX() + loc.getX(), location.getY() + loc.getY(), location.getZ() + loc.getZ());
+            Location location1 = Utils.add(location, loc);
             MaterialData block = entries.getValue();
             location1.getBlock().setType(block.getItemType());
             location1.getBlock().setData(block.getData());
+            list.add(location1);
         }
+        return list;
 
     }
 
@@ -154,6 +161,7 @@ public class Base {
     }
 
     public void save() throws SQLException {
+        customPlayer.sendMessage(Prefixes.BEDCRAFT+" Sauvegarde de votre base...");
         PreparedStatement preparedStatement = sqlManager.prepareStatement("INSERT INTO bases_blocks (id, material, data, x, y, z, world) VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE material=VALUES(material)");
         preparedStatement.setInt(1, customPlayer.getId());
         for (Map.Entry<Location, MaterialData> entries : blocks.entrySet()) {
@@ -168,12 +176,14 @@ public class Base {
             preparedStatement.execute();
         }
 
+        customPlayer.sendMessage(Prefixes.BEDCRAFT+" Base sauvegardée !");
+
         preparedStatement.close();
     }
 
     public Location getOffset(Location location) throws SQLException {
         Location location1 = getLocation();
-        return new Location(location.getWorld(), location.getX()-location1.getX(), location.getY()-location1.getY(), location.getZ()-location1.getZ());
+        return Utils.remove(location, location1);
     }
 
     public void addBlock(Location location, MaterialData materialData) {

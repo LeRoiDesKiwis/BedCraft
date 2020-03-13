@@ -1,22 +1,28 @@
 package fr.leroideskiwis.bedcraft.duel;
 
 import fr.leroideskiwis.bedcraft.builders.TextComponentBuilder;
+import fr.leroideskiwis.bedcraft.managers.CustomPlayerManager;
+import fr.leroideskiwis.bedcraft.player.CustomPlayer;
+import fr.leroideskiwis.bedcraft.player.DuelPlayer;
+import fr.leroideskiwis.bedcraft.utils.Utils;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Duels {
 
     private static final String DUEL_WORLD = "duel";
     private Map<Player, Player> requests = new HashMap<>();
     private List<Duel> duels = new ArrayList<>();
+    private CustomPlayerManager customPlayerManager;
+
+    public Duels(CustomPlayerManager customPlayerManager){
+        this.customPlayerManager = customPlayerManager;
+    }
 
     public void request(Player player, Player target){
         requests.put(target, player);
@@ -41,6 +47,10 @@ public class Duels {
         return requests.containsKey(player) || requests.containsValue(player);
     }
 
+    public boolean isInDuel(Player player){
+        return duels.stream().anyMatch(duel -> duel.hasPlayer(player));
+    }
+
     public void accept(Player player){
         Player target = requests.get(player);
         requests.remove(player);
@@ -57,10 +67,19 @@ public class Duels {
     }
 
     private void start(Player player, Player target) {
-        Player[] players = {player, target};
         Location location = foundLocation();
-        Duel duel = new Duel(players, location);
+        CustomPlayer customPlayer = customPlayerManager.getCustomPlayer(player).get();
+        CustomPlayer targetPlayer = customPlayerManager.getCustomPlayer(target).get();
+
+        DuelPlayer player1 = new DuelPlayer(location, customPlayer);
+        DuelPlayer player2 = new DuelPlayer(Utils.add(location, 100, 0, 20), targetPlayer);
+        Duel duel = new Duel(player1, player2, location);
         duels.add(duel);
+        duel.start();
+    }
+
+    public Optional<DuelPlayer> getDuelPlayer(CustomPlayer customPlayer){
+        return duels.stream().map(duel -> duel.getDuelPlayer(customPlayer)).filter(Optional::isPresent).map(Optional::get).findAny();
     }
 
     public Location foundLocation(){
@@ -73,6 +92,10 @@ public class Duels {
             }
         }
         return new Location(Bukkit.getWorld(DUEL_WORLD), 0, 70, 0);
+    }
+
+    public void clearAll(){
+        duels.forEach(Duel::clearDuel);
     }
 
 }

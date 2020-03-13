@@ -11,6 +11,6 @@ public enum Prefixes {
     }
 
     public String toString(){
-        return string+"§r";
+        return string+"§7";
     }
 }

@@ -1,6 +1,7 @@
 package fr.leroideskiwis.bedcraft.managers;
 
 import fr.leroideskiwis.bedcraft.core.BedCraft;
+import fr.leroideskiwis.bedcraft.duel.Duels;
 import fr.leroideskiwis.bedcraft.player.CustomPlayer;
 import fr.leroideskiwis.bedcraft.shop.Shop;
 import fr.leroideskiwis.bedcraft.shop.ShopInventory;
@@ -22,18 +23,19 @@ public class CustomPlayerManager {
 
     private final SQLManager sqlManager;
     private final BedCraft bedcraft;
+    private Duels duels;
 
-    public CustomPlayerManager(BedCraft bedCraft, SQLManager sqlManager){
+    public CustomPlayerManager(Duels duels, BedCraft bedCraft, SQLManager sqlManager){
 
         this.bedcraft = bedCraft;
         this.sqlManager = sqlManager;
     }
 
     public CustomPlayer registerAndLoad(Player player, Shop shop) throws SQLException {
-        CustomPlayer customPlayer = new CustomPlayer(player, shop, sqlManager, bedcraft);
+        CustomPlayer customPlayer = new CustomPlayer(duels, player, shop, sqlManager, bedcraft);
         customPlayers.add(customPlayer);
         ShopInventory shopInventory = customPlayer.shopInventory;
-        shopInventory.getItem(new ItemStack(Material.BED, 1)).ifPresent(shopItem -> shopInventory.getShopItems().add(shopItem));
+
         customPlayer.load();
         return customPlayer;
     }

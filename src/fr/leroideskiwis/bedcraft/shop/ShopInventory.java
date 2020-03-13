@@ -4,6 +4,7 @@ import fr.leroideskiwis.bedcraft.player.CustomPlayer;
 import fr.leroideskiwis.bedcraft.player.PlayerState;
 import fr.leroideskiwis.bedcraft.sql.SQLManager;
 import fr.leroideskiwis.bedcraft.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,10 +29,22 @@ public class ShopInventory {
         this.shop = shop;
     }
 
+    public void sell(ShopItem shopItem){
+        int sellPrice = (int)((float)shopItem.price*0.8f);
+        customPlayer.addGold(sellPrice);
+        shopItem.add(-1);
+        if(shopItem.getAmount() <= 0) items.remove(shopItem);
+        customPlayer.sendMessage("§aVous avez vendu "+shopItem.itemStack.getType().toString().toLowerCase()+" a "+sellPrice);
+    }
+
     public void buy(ShopItem shopItem) {
         if(shopItem == null) return;
+        if(shopItem.price < 0) {
+            customPlayer.sendMessage("§cVous ne pouvez pas acheter ça !");
+            return;
+        }
         if(customPlayer.hasEnough(shopItem.price)) {
-            if (has(shopItem.itemStack)) {
+            if(has(shopItem.itemStack)) {
                 ShopItem shopItem1 = getItem(shopItem.itemStack).get();
                 shopItem1.add(shopItem);
             } else {
@@ -47,7 +60,10 @@ public class ShopInventory {
     public Optional<ShopItem> getItem(ItemStack item){
         if(item == null) return Optional.empty();
         return items.stream().filter(shopItem2 -> {
-            if(shopItem2 != null && shopItem2.itemStack != null) return shopItem2.itemStack.isSimilar(item);
+            if(shopItem2 != null) {
+                ItemStack itemStack = shopItem2.itemStack;
+                if (itemStack != null) return itemStack.getType() == item.getType() && itemStack.getData().getData() == item.getData().getData();
+            }
             return false;
         }).findAny();
     }
@@ -92,11 +108,14 @@ public class ShopInventory {
 
     public void setInventoryPlayer(){
         customPlayer.player.getInventory().clear();
-        for (int i = 0; i < customPlayer.shopInventory.getShopItems().size() && i < 35; i++) {
-            ItemStack toAdd = customPlayer.shopInventory.getShopItems().get(i).itemStack.clone();
+        int j = 0 ;
+        for (ShopItem item : items) {
+            if(j > 35) break;
+            ItemStack toAdd = item.itemStack.clone();
             int count = customPlayer.base.countBlocks(toAdd);
             toAdd.setAmount(toAdd.getAmount()-count);
-            i+= Utils.setInventory(customPlayer.player.getInventory(), i, toAdd);
+            // DEBUG customPlayer.sendMessage("Added "+toAdd.getAmount()+" "+toAdd.getType().toString().toLowerCase());
+            j+= Utils.setInventory(customPlayer.player.getInventory(), j, toAdd);
         }
     }
 

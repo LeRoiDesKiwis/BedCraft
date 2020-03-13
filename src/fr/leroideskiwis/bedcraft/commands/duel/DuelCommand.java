@@ -54,6 +54,16 @@ public class DuelCommand implements CommandExecutor {
             return false;
         }
 
+        if(duels.isInDuel(player)){
+            player.sendMessage("§cVous êtes déjà en duel !");
+            return false;
+        }
+
+        if(duels.isInDuel(target)){
+            player.sendMessage("§c"+target.getDisplayName()+" est déjà en duel !");
+            return false;
+        }
+
         duels.request(player, target);
         return false;
     }

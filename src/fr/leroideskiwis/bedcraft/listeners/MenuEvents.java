@@ -36,7 +36,8 @@ public class MenuEvents implements Listener {
         if(!menuOpt.isPresent()) return;
 
         Menu menu = menuOpt.get();
-        menu.onClick(event.getInventory(), shop, event.getCurrentItem(), event.getSlot(), customPlayer.get());
+        menu.onClick(event.getClick(), event.getInventory(), shop, event.getCurrentItem(), event.getSlot(), customPlayer.get());
+        event.setCancelled(true);
 
     }
 
