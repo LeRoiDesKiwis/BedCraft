@@ -133,7 +133,9 @@ public class CustomPlayer {
 
     public void teleportToSpawn(){
         ConfigurationSection config = bedCraft.getConfig().getConfigurationSection("locations.hub");
-        player.teleport(new Location(Bukkit.getWorld(config.getString("world")), config.getInt("x"), config.getInt("y"), config.getInt("z")));
+        Location location = new Location(Bukkit.getWorld(config.getString("world")), config.getInt("x"), config.getInt("y"), config.getInt("z"));
+        player.teleport(location);
+        player.setBedSpawnLocation(location, true);
     }
 
     public int getExp() {

@@ -1,15 +1,15 @@
 package fr.leroideskiwis.bedcraft.player;
 
+import fr.leroideskiwis.bedcraft.boucles.DuelBoucle;
+import fr.leroideskiwis.bedcraft.core.BedCraft;
 import fr.leroideskiwis.bedcraft.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class DuelPlayer {
 
@@ -18,7 +18,7 @@ public class DuelPlayer {
     private final Player player;
     private List<Location> locations = new ArrayList<>();
     private Location bedLocation;
-    private static final Material BED_TYPE = Material.OBSIDIAN;
+    private static final Material BED_TYPE = Material.PUMPKIN;
 
     public DuelPlayer(Location baseLocation, CustomPlayer customPlayer) {
         this.baseLocation = baseLocation;
@@ -65,7 +65,19 @@ public class DuelPlayer {
         }
     }
 
+    public void setBed(){
+        if(!hasBed()) this.bedLocation = null;
+    }
+
     public boolean hasBed(){
         return bedLocation != null && bedLocation.getBlock().getType() == BED_TYPE;
+    }
+
+    public void sendMessage(String message){
+        player.sendMessage(message);
+    }
+
+    public void giveReward(){
+        customPlayer.addGold(100);
     }
 }

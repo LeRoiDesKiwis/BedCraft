@@ -39,10 +39,10 @@ public class DuelCommand implements CommandExecutor {
             return false;
         }
 
-        /*if(target.equals(player)){
+        if(target.equals(player)){
             player.sendMessage("§cVous ne pouvez pas vous défier vous même !");
             return false;
-        }*/
+        }
 
         if (duels.hasRequest(player)) {
             player.sendMessage("§cVous avez déjà un duel en attente");

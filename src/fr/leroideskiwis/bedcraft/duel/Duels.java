@@ -1,6 +1,7 @@
 package fr.leroideskiwis.bedcraft.duel;
 
 import fr.leroideskiwis.bedcraft.builders.TextComponentBuilder;
+import fr.leroideskiwis.bedcraft.core.BedCraft;
 import fr.leroideskiwis.bedcraft.managers.CustomPlayerManager;
 import fr.leroideskiwis.bedcraft.player.CustomPlayer;
 import fr.leroideskiwis.bedcraft.player.DuelPlayer;
@@ -19,9 +20,11 @@ public class Duels {
     private Map<Player, Player> requests = new HashMap<>();
     private List<Duel> duels = new ArrayList<>();
     private CustomPlayerManager customPlayerManager;
+    private BedCraft bedCraft;
 
-    public Duels(CustomPlayerManager customPlayerManager){
+    public Duels(BedCraft bedcraft, CustomPlayerManager customPlayerManager){
         this.customPlayerManager = customPlayerManager;
+        this.bedCraft = bedcraft;
     }
 
     public void request(Player player, Player target){
@@ -73,13 +76,17 @@ public class Duels {
 
         DuelPlayer player1 = new DuelPlayer(location, customPlayer);
         DuelPlayer player2 = new DuelPlayer(Utils.add(location, 100, 0, 20), targetPlayer);
-        Duel duel = new Duel(player1, player2, location);
+        Duel duel = new Duel(bedCraft, player1, player2, location);
         duels.add(duel);
         duel.start();
     }
 
     public Optional<DuelPlayer> getDuelPlayer(CustomPlayer customPlayer){
         return duels.stream().map(duel -> duel.getDuelPlayer(customPlayer)).filter(Optional::isPresent).map(Optional::get).findAny();
+    }
+
+    public Optional<Duel> getDuel(CustomPlayer customPlayer){
+        return duels.stream().filter(duel -> duel.getDuelPlayer(customPlayer).isPresent()).findAny();
     }
 
     public Location foundLocation(){
@@ -98,4 +105,20 @@ public class Duels {
         duels.forEach(Duel::clearDuel);
     }
 
+    public void kill(DuelPlayer duelPlayer) {
+        Optional<Duel> duelOpt = getDuel(duelPlayer.getCustomPlayer());
+        duelOpt.ifPresent(duel -> {
+            duel.kill(duelPlayer);
+            duels.remove(duel);
+        });
+
+    }
+
+    public void respawn(DuelPlayer duelPlayer) {
+        Optional<Duel> duelOpt = getDuel(duelPlayer.getCustomPlayer());
+        duelOpt.ifPresent(duel -> {
+            duel.respawn(duelPlayer);
+            duelPlayer.teleport();
+        });
+    }
 }
